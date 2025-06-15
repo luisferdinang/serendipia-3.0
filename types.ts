@@ -32,6 +32,8 @@ export interface Transaction {
   date: string; // YYYY-MM-DD
   type: TransactionType;
   paymentMethod: PaymentMethod;
+  createdAt?: string; // ISO date string
+  updatedAt?: string; // ISO date string
   // Currency is derived from paymentMethod
 }
 

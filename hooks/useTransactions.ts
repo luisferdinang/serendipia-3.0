@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Transaction, FilterPeriod, FinancialSummaryData, Currency, PaymentMethod, TransactionType, CustomDateRange } from '../types';
 import { PAYMENT_METHOD_OPTIONS, INITIAL_EXCHANGE_RATE, formatDateForInput, parseInputDate } from '../constants';
-import * as transactionService from '../services/transactionService';
+import * as transactionService from '../src/services/transactionService';
 
 const today = new Date();
 
@@ -66,14 +66,16 @@ export const useTransactions = () => {
 
   const updateTransaction = async (transactionToUpdate: Transaction) => {
     try {
-      const updatedTransactionFromStorage = await transactionService.updateTransaction(transactionToUpdate);
+      const { id, ...updateData } = transactionToUpdate;
+      const updatedTransactionFromStorage = await transactionService.updateTransaction(id, updateData);
       setTransactions(prevTransactions =>
-        prevTransactions.map(t => t.id === updatedTransactionFromStorage.id ? updatedTransactionFromStorage : t)
-        .sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        prevTransactions
+          .map(t => t.id === updatedTransactionFromStorage.id ? updatedTransactionFromStorage : t)
+          .sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       );
     } catch (e: any) {
-      console.error("Failed to update transaction in localStorage", e);
-      setError(`Error al actualizar transacción en localStorage: ${e.message}`);
+      console.error("Failed to update transaction in Firestore", e);
+      setError(`Error al actualizar transacción en Firestore: ${e.message}`);
     }
   };
 

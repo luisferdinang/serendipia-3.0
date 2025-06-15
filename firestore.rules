@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permite todo el acceso durante desarrollo
+    match /{document=**} {
+      allow read, write: if true;
+    }
+    
+    // Reglas específicas para la colección de transacciones
+    match /transactions/{transactionId} {
+      allow read, write: if true;
+    }
+    
+    // Reglas específicas para la colección de configuración
+    match /settings/{document} {
+      allow read, write: if true;
+    }
+  }
+}
